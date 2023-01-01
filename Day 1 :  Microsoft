@@ -1,5 +1,6 @@
 
 1. Evaluate Reverse Polish Notation
+
 https://leetcode.com/problems/evaluate-reverse-polish-notation/submissions/869136107/
 Solution :
 
@@ -31,3 +32,134 @@ public:
         return Stack.top();
     }
 };
+
+
+2. Combination Sum III
+https://leetcode.com/problems/combination-sum-iii/submissions/869140116/
+
+Class{
+vector<vector<int>> ansArr;
+    
+public:
+    
+    int sum(vector<int>& combination){
+        int ans = 0;
+        for(auto x: combination){
+            ans += x;
+        }
+        return ans;
+    }
+    
+    void combinationSumHelper(int k, int n, vector<int>& combination, int num){
+        
+        if(k == 0){
+            if(sum(combination) == n ){
+                ansArr.push_back(combination);
+            }
+           
+            return;
+            }
+        
+        if(num > 9) return;
+        
+        combination.push_back(num);  // Including num in combination
+        combinationSumHelper(k - 1, n, combination, num + 1);
+        combination.pop_back(); // Not including num in combination
+        combinationSumHelper(k, n, combination, num + 1);    
+        
+    }
+    
+    vector<vector<int>> combinationSum3(int k, int n) {
+        
+        vector<int> combination;
+        combinationSumHelper(k, n, combination, 1);
+        return ansArr;
+        
+    }
+    
+    
+3. BULLS AND COWS
+
+
+ string getHint(string secret, string guess) {
+        int n=secret.size();
+        int cntb=0,cntc=0;
+        map<int,int> mp1;
+        map<int,int> mp2;
+        for(int i=0;i<n;i++)
+        {
+            if(secret[i]==guess[i])
+                cntb++;
+            else
+            {
+                mp1[secret[i]-'0']++;
+                mp2[guess[i]-'0']++;
+            }
+            
+        }
+        for(auto it:mp1)
+        {
+            if(mp2.find(it.first)!=mp2.end())
+            cntc+=min(mp2[it.first],it.second);
+        }
+        string s="";
+        s=to_string(cntb)+"A"+to_string(cntc)+"B";
+        return s;
+    }
+    
+    
+    4.ROTATE FUNCTION :
+    class Solution {
+public:
+    int maxRotateFunction(vector<int>& nums) 
+    {
+        int sum=0;
+        int lastidx=nums.size()-1;
+        int ans=INT_MIN;
+
+        vector<int>f(nums.size(),0);
+        int curr=0;
+
+        for(int i=0;i<nums.size();i++)
+        {
+           sum=sum+nums[i];
+           curr=curr+(i*nums[i]);
+        }        
+        f[0]=curr;
+        ans=max(ans,f[0]);
+
+        for(int i=1;i<f.size();i++)
+        {
+            f[i] = f[i-1] + sum - (nums.size()*nums[lastidx]);
+            lastidx--;
+            ans=max(ans,f[i]);
+        }
+        return ans;    
+    }
+};
+
+5. Largest Divisible Subset 
+vector<int> largestDivisibleSubset(vector<int>& nums) {
+        
+        int n = nums.size() ,ans = -1 ,  lastIndex =-1;
+        vector<int> dp(n, 1);
+        vector<int> trace(n, -1);
+        sort(nums.begin() , nums.end());
+
+     for(int i = 0; i < n; i++){
+          for(int j = 0; j < i; j++){
+
+             if((nums[i]%nums[j] == 0) && dp[j] >= dp[i]){ dp[i] = dp[j] + 1;   trace[i] = j;}             
+         }
+           if(dp[i] > ans){ans = dp[i];  lastIndex = i;} 
+    }
+
+        vector<int>path;
+        while(lastIndex != -1){
+            path.push_back(nums[lastIndex]);
+            lastIndex = trace[lastIndex];
+        }
+        reverse(path.begin(), path.end());       
+          return path;
+    }
+    
